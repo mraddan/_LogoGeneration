@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Generate Logo</title>
+</head>
+
+<body>
+    <h1>Generate Logo</h1>
+    <form action="/" method="post" onsubmit="showLoading()">
+        <label for="prompt">Prompt:</label>
+        <input type="text" id="prompt" name="prompt" required><br>
+
+        <label for="style">Style:</label>
+        <select id="style" name="style" required>
+            <option value="" disabled selected>Select a style</option>
+        </select><br>
+
+        <button type="submit" >Generate</button>
+
+        <div id="loading" style="display: none;">Generating logo, please wait...</div>
+
+        <h2>Generate Logo</h2>
+        <img id="generatedImage" src="data:image/jpeg;base64,{{ image_data }}" alt="Generated Image" style="max-width: 1280px; max-height: 1280px;">
+    </form>
+
+    <script>
+        // Load styles from the JSON file and populate the select options
+        function showLoading() {
+            // Show the loading element
+            const loadingElement = document.getElementById('loading');
+            loadingElement.style.display = 'block';
+
+            // Hide the generated image (if it was already shown)
+            const generatedImage = document.getElementById('generatedImage');
+            generatedImage.style.display = 'none';
+
+            return true;
+        }
+        
+        fetch('/static/style.json')
+            .then(response => response.json())
+            .then(data => {
+                const styleSelect = document.getElementById('style');
+                for (const style in data) {
+                    const option = document.createElement('option');
+                    option.value = data[style];
+                    option.text = style;
+                    styleSelect.appendChild(option);
+                }
+            })
+            .catch(error => console.error('Error loading styles:', error));
+    
+    </script>
+</body>
+
+</html>
